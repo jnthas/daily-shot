@@ -1,0 +1,11 @@
+[Unit]
+Description=Run daily-shot tick every minute (0 MB idle RAM)
+
+[Timer]
+OnBootSec=45s
+OnCalendar=*-*-* *:*:00
+AccuracySec=5s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

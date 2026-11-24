@@ -1,0 +1,99 @@
+# Copy to config.toml and adjust for your setup.
+
+[location]
+# Example coordinates (replace with your own latitude/longitude)
+latitude = -19.9167
+longitude = -43.9345
+# IANA timezone name (e.g. "America/Sao_Paulo") or "local" to use the OS timezone
+timezone = "America/Sao_Paulo"
+# Optional minute shift if hills, trees, or buildings obscure the western horizon
+sunset_offset_minutes = 0
+
+[schedule]
+shots_before_sunset = 6
+shots_after_sunset = 6
+interval_before_minutes = 15
+interval_after_minutes = 15
+include_sunset_shot = true
+slot_grace_minutes = 5
+
+[camera]
+# Explicit device path (e.g. "/dev/video0" or "/dev/v4l/by-id/...") or "auto"
+# to discover by device_name_match via `v4l2-ctl --list-devices`.
+device = "auto"
+device_name_match = "Fic760xUsbCamera"
+width = 4000
+height = 3000
+input_format = "mjpeg"
+warmup_seconds = 3.0
+controls_override_file = "./data/camera_controls.json"
+
+# UVC controls applied on boot and before every capture (verified on IMX362 Fic760xUsbCamera).
+# focus_automatic_continuous=0 locks manual focus; focus_absolute=0 is infinity (verify via calibrate or web UI).
+# power_line_frequency: 0=Disabled, 1=50Hz, 2=60Hz (Brazil)
+[camera.controls]
+focus_automatic_continuous = 0
+focus_absolute = 0
+auto_exposure = 3
+white_balance_automatic = 1
+power_line_frequency = 2
+
+[watermark]
+enabled = true
+format = "%Y-%m-%d %H:%M:%S"
+# bottom-right, bottom-left, top-right, top-left
+position = "bottom-right"
+font_path = "auto"
+font_size_percent = 2.2
+show_background = true
+jpeg_quality = 95
+
+[storage]
+archive_dir = "./data/shots"
+state_file = "./data/state.json"
+local_retention_days = 14
+min_free_mb = 500
+
+[backup]
+enabled = true
+rclone_remote = "gdrive"
+rclone_path = ""
+drive_root_folder_id = ""
+max_retries = 3
+retry_delay_seconds = 10
+retry_cooldown_minutes = 5
+
+[bluesky]
+enabled = true
+pds_url = "https://bsky.social"
+handle = "dailyshot.bsky.social"
+# Provide BLUESKY_APP_PASSWORD in .env (recommended) or environment variable
+publish_offset_after_window_minutes = 5
+# Bluesky's app.bsky.embed.images blob limit is ~1,000,000 bytes on most PDS instances;
+# 950000 is a safe default (raise up to 1950000 if your PDS allows 2 MB).
+max_bytes = 950000
+max_dimension = 2048
+initial_quality = 92
+min_quality = 70
+location_name = "Belo Horizonte"
+# Supported variables: {date}, {time}, {datetime}, {sunset_time}, {location}
+post_template = "Sunset from {location} — {date} at {time}"
+alt_template = "Outdoor horizon view from {location} captured on {date} at {time} (local sunset {sunset_time})."
+
+[alerts]
+enabled = true
+# Recipient Bluesky handle or DID for failure & boot-recovery DMs (e.g. "your-personal.bsky.social")
+recipient_handle = ""
+alert_after_failures = 2
+cooldown_hours = 12
+notify_on_boot = true
+
+[web]
+enabled = true
+host = "127.0.0.1"
+port = 8080
+allowed_cidrs = ["127.0.0.0/8", "::1/128", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+preview_width = 1280
+preview_height = 720
+preview_fps = 10
+manual_capture_watermark_default = true

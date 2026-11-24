@@ -1,0 +1,18 @@
+[Unit]
+Description=daily-shot local-only Web UI for live preview and V4L2 camera tuning
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/daily-shot
+Environment=PYTHONPATH=/home/pi/daily-shot/src
+ExecStart=/usr/bin/python3 -m daily_shot.cli --config /home/pi/daily-shot/config.toml web
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

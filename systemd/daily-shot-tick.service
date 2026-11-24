@@ -1,0 +1,13 @@
+[Unit]
+Description=daily-shot sunset camera tick (capture, resumable backup, Bluesky publish, alerts)
+After=network-online.target systemd-time-wait-sync.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/daily-shot
+Environment=PYTHONPATH=/home/pi/daily-shot/src
+ExecStart=/usr/bin/python3 -m daily_shot.cli --config /home/pi/daily-shot/config.toml tick
+StandardOutput=journal
+StandardError=journal
